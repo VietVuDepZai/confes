@@ -43,7 +43,6 @@ def user_register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'auth/register.html', {'form': form})
-@login_required
 def home(request):
     documents = Document.objects.all().select_related('owner')
     purchased_ids = PurchaseRecord.objects.filter(user=request.user).values_list('document_id', flat=True)
