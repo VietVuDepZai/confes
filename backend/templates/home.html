@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Danh sách tài liệu{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Danh sách tài liệu</h1>
+<hr>
+
+{% if documents %}
+    <div class="list-group">
+        {% for doc in documents %}
+            <div class="list-group-item list-group-item-action mb-3 shadow-sm rounded d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column w-75">
+                    <h5 class="mb-1 text-primary">{{ doc.title }}</h5>
+                    <p class="mb-1 text-muted">{{ doc.description|truncatechars:150 }}</p>
+                    <small class="text-secondary">
+                        Tác giả: <strong>{{ doc.owner.username }}</strong> • 
+                        Giá: <span class="badge bg-info text-dark">{{ doc.cost }} xu</span>
+                    </small>
+                </div>
+                <div class="d-flex flex-column gap-2 text-end">
+                    {% if user == doc.owner %}
+                        <!-- Tác giả: tải xuống + sửa + xóa -->
+                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-success" download>Tải xuống</a>
+                        <a href="{% url 'edit_document' doc.id %}" class="btn btn-sm btn-warning">Sửa</a>
+                        <form action="{% url 'delete_document' doc.id %}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài liệu này?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+                        </form>
+                    {% elif doc.id in purchased_ids %}
+                        <!-- Đã mua: tải xuống -->
+                        <a href="{{ doc.file.url }}" class="btn btn-sm btn-success" download>Tải xuống</a>
+                    {% else %}
+                        <!-- Chưa mua: nút mua -->
+                        <form action="{% url 'purchase_document' doc.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Mua tài liệu
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">Chưa có tài liệu nào.</div>
+{% endif %}
+{% endblock %}

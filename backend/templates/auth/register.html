@@ -1,0 +1,75 @@
+{% load widget_tweaks %}
+
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Đăng ký</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+    <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Tạo tài khoản</h1>
+    
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="text-center text-sm mb-2 
+                      {% if message.tags == 'success' %} text-green-600
+                      {% elif message.tags == 'error' %} text-red-600
+                      {% else %} text-gray-700 {% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- ✅ Hiển thị tất cả lỗi chung -->
+    {% if form.errors %}
+      <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <ul class="text-red-600 text-sm list-disc list-inside space-y-1">
+          {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+
+      <div>
+        <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Tên đăng nhập</label>
+        {{ form.username|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+      </div>
+
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        {{ form.email|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+      </div>
+
+      <div>
+        <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+        {{ form.password1|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+      </div>
+
+      <div>
+        <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">Nhập lại mật khẩu</label>
+        {{ form.password2|add_class:"w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+      </div>
+      
+      <button type="submit" class="w-full bg-green-600 text-white rounded-lg py-3 font-semibold hover:bg-green-700 transition duration-200">
+        Đăng ký
+      </button>
+    </form>
+    
+    <p class="text-center text-sm mt-6 text-gray-600">
+      Đã có tài khoản?
+      <a href="{% url 'login' %}" class="text-green-600 font-medium hover:underline">Đăng nhập</a>
+    </p>
+  </div>
+</body>
+</html>
