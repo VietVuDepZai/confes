@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-z17c_g*tc8kk5$x^9(9)8wo&wuu(*h&8k9m29tqxr!iflfl!x_
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['confes-delta.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1','confes-delta.vercel.app']
 
 
 # Application definition
