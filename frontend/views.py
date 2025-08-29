@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 from documents.models import  Document, PurchaseRecord, Transaction
 from users.forms import CustomUserCreationForm, LoginForm
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, get_user_model, logout
 from django.contrib.auth.models import User
+User = get_user_model()
 
 def user_login(request):
     if request.method == 'POST':
@@ -18,8 +19,8 @@ def user_login(request):
             user_or_email = form.cleaned_data.get('user_or_email')
             password = form.cleaned_data.get('password')
             
-            # Kiểm tra nếu input là email thì tìm username
-            if '@' in user_or_email:  # đơn giản, có thể check regex email
+            # Xác định là email hay username
+            if '@' in user_or_email:
                 try:
                     user_obj = User.objects.get(email=user_or_email)
                     username = user_obj.username
