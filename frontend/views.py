@@ -56,12 +56,13 @@ def user_register(request):
     return render(request, 'auth/register.html', {'form': form})
 @login_required(login_url='/login/')  # hoặc reverse('login')
 def home(request):
-    documents = Document.objects.all().select_related('owner')
+    documents = Document.objects.all().select_related('owner').order_by('-created_at')
     purchased_ids = PurchaseRecord.objects.filter(user=request.user).values_list('document_id', flat=True)
     return render(request, 'home.html', {
         'documents': documents,
         'purchased_ids': purchased_ids
     })
+
 def user_logout(request):
     logout(request)
     messages.success(request, "Bạn đã đăng xuất thành công!")
