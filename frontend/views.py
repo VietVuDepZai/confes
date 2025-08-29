@@ -6,29 +6,39 @@ from documents.models import Document
 from documents.forms import DocumentForm
 from django.contrib.auth.decorators import login_required
 from documents.models import  Document, PurchaseRecord, Transaction
-from users.forms import CustomUserCreationForm
+from users.forms import CustomUserCreationForm, LoginForm
 from django.shortcuts import get_object_or_404, redirect
-
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
+
 def user_login(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            user_or_email = form.cleaned_data.get('user_or_email')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
+            
+            # Kiểm tra nếu input là email thì tìm username
+            if '@' in user_or_email:  # đơn giản, có thể check regex email
+                try:
+                    user_obj = User.objects.get(email=user_or_email)
+                    username = user_obj.username
+                except User.DoesNotExist:
+                    username = None
+            else:
+                username = user_or_email
+            
+            user = authenticate(username=username, password=password) if username else None
+            
             if user is not None:
                 login(request, user)
-                messages.success(request, f"Chào {username}, bạn đã đăng nhập thành công!")
-                return redirect('home')  # đổi 'home' sang tên route trang chủ của bạn
+                messages.success(request, f"Chào {user.username}, bạn đã đăng nhập thành công!")
+                return redirect('home')
             else:
-                messages.error(request, "Sai tài khoản hoặc mật khẩu.")
-        else:
-            messages.error(request, "Sai tài khoản hoặc mật khẩu.")
+                messages.error(request, "Sai username/email hoặc mật khẩu.")
     else:
-        form = AuthenticationForm()
+        form = LoginForm()
     return render(request, 'auth/login.html', {'form': form})
-
 
 def user_register(request):
     if request.method == 'POST':
