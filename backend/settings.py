@@ -1,4 +1,10 @@
 from pathlib import Path
+import cloudinary
+cloudinary.config(
+    cloud_name='dkjjyecbi',
+    api_key='179548391524312',
+    api_secret='Xbip_nSHaCZluU8uBF-Uy5qKwmU'
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -8,7 +14,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','confes-delta.vercel.app']
 
-
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,12 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
-
-    # my apps
+    'cloudinary',
+    'cloudinary_storage',
     'users',
     'documents',
     'frontend',
@@ -90,24 +93,24 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dkjjyecbi',
+    'API_KEY': '179548391524312',
+    'API_SECRET': 'Xbip_nSHaCZluU8uBF-Uy5qKwmU'
+}
 
 # Static & Media
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'   # ✅ sửa lại cho đúng, không dùng static/images cho media
-
-# Default primary key field type
+MEDIA_URL = None
+MEDIA_ROOT = None
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# ✅ Custom user model
 AUTH_USER_MODEL = 'users.CustomUser'
 
-# ✅ Django REST Framework config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -117,12 +120,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-# ✅ (Nếu muốn dùng Cloudinary sau này, cần cài `cloudinary` và `django-cloudinary-storage`)
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dyiesiahu',
-    'API_KEY': '193699843749843',
-    'API_SECRET': 'lv0RbiRsVz6SWKtHsB5MdJKfFzQ'
-}
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
