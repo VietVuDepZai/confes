@@ -107,12 +107,20 @@ def purchase_document(request, document_id):
         messages.error(request, "Bạn không đủ xu để mua tài liệu này.")
         return redirect('home')
 
-    # Tiến hành mua
+    # Trừ coin người mua
     request.user.coins -= doc.cost
     request.user.save()
 
+    # Cộng coin cho owner
+    doc.owner.coins += doc.cost
+    doc.owner.save()
+
+    # Ghi lại lịch sử mua
     PurchaseRecord.objects.create(user=request.user, document=doc)
     Transaction.objects.create(user=request.user, document=doc, type='purchase', amount=-doc.cost)
+
+    # Ghi lại lịch sử nhận coin cho owner (tùy chọn)
+    Transaction.objects.create(user=doc.owner, document=doc, type='income', amount=doc.cost)
 
     messages.success(request, f"Mua tài liệu '{doc.title}' thành công!")
     return redirect('home')
